@@ -1,7 +1,8 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.4;
 
-import "./IERC20.sol";
+import "@openzeppelin/contracts/interfaces/IERC20.sol";
+import "@openzeppelin/contracts/utils/Address.sol";
 
 contract DAO {
 
@@ -43,9 +44,11 @@ contract DAO {
         _;
     }
 
-    function addProposal(bytes calldata callData, address recipient, string memory description) external only(chairPerson) {
-        (bool success,) = recipient.staticcall(callData);
-        require(success, "Bad function call signature");
+    function addProposal(bytes memory callData, address recipient, string memory description) external only(chairPerson) {
+        // require(recipient.code.length > 0, "Recipient has no code");
+        // (bool success,) = recipient.staticcall(callData);
+        Address.functionStaticCall(recipient, callData);
+        // require(success, "Bad function call signature");
 
         counter++;
         uint endTime = block.timestamp + debatingPeriodDuration;
@@ -104,8 +107,7 @@ contract DAO {
             votesFor + votesAgainst > minimunQuorum;
 
         if (won) {
-            (bool success,) = prop.recipient.call(prop.callData);
-            require(success, "Function call failed");
+            Address.functionCall(prop.recipient, prop.callData);
         }
 
         emit ProposalFinished(proposalNum, won);
@@ -121,10 +123,12 @@ contract DAO {
     }
 
     function setMinimumQuorum(uint minimumQuorum_) external only(address(this)) {
+        require(minimumQuorum_ > 0, "minimunQuorum should be positive");
         minimunQuorum = minimumQuorum_;
     }
 
     function setDebatingPeriod(uint debatingPeriod) external only(address(this)) {
+        require(debatingPeriod > 0, "debatingPeriod should be positive");
         debatingPeriodDuration = debatingPeriod;
     }
 }

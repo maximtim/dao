@@ -17,6 +17,14 @@ dotenv.config();
 const config: HardhatUserConfig = {
   solidity: "0.8.4",
   networks: {
+    hardhat: {
+      gas: 5000_000,
+      gasPrice: 8000000000
+    },
+    localhost: {
+      gas: 5000_000,
+      gasPrice: 8000000000
+    },
     rinkeby: {
       url: process.env.PROJECT_URL,
       accounts: JSON.parse(process.env.PRIVATE_KEYS_LIST !== undefined ? process.env.PRIVATE_KEYS_LIST : ""),

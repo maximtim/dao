@@ -1,3 +1,4 @@
+import { expect } from "chai";
 import { Contract, ContractTransaction } from "ethers";
 import { Interface } from "ethers/lib/utils";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
@@ -11,6 +12,15 @@ export function delay(n : number){
 export async function execTx(txPromise : Promise<ContractTransaction>) {
   const tx = await txPromise;
   return await tx.wait();
+}
+
+async function expectTuple(txRes : Promise<any[]>, ...args : any[]) {
+  const [...results] = await txRes;
+
+  results.forEach((element, index) => {
+    if (index >= args.length) return;
+    expect(element).to.eq(args[index]);
+  });
 }
 
 export async function loggedSafeExecTx(contract : Contract, funcName : string, ...args : any[]) {
