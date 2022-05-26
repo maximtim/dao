@@ -45,10 +45,7 @@ contract DAO {
     }
 
     function addProposal(bytes memory callData, address recipient, string memory description) external only(chairPerson) {
-        // require(recipient.code.length > 0, "Recipient has no code");
-        // (bool success,) = recipient.staticcall(callData);
-        Address.functionStaticCall(recipient, callData);
-        // require(success, "Bad function call signature");
+        require(recipient.code.length > 0, "Recipient has no code");
 
         counter++;
         uint endTime = block.timestamp + debatingPeriodDuration;
@@ -107,7 +104,8 @@ contract DAO {
             votesFor + votesAgainst > minimunQuorum;
 
         if (won) {
-            Address.functionCall(prop.recipient, prop.callData);
+            (bool success, bytes memory returndata) = prop.recipient.call(prop.callData);
+            Address.verifyCallResult(success, returndata, "Function call failed");
         }
 
         emit ProposalFinished(proposalNum, won);

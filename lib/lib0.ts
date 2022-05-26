@@ -14,7 +14,7 @@ export async function execTx(txPromise : Promise<ContractTransaction>) {
   return await tx.wait();
 }
 
-async function expectTuple(txRes : Promise<any[]>, ...args : any[]) {
+export async function expectTuple(txRes : Promise<any[]>, ...args : any[]) {
   const [...results] = await txRes;
 
   results.forEach((element, index) => {
