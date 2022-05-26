@@ -9,7 +9,7 @@ task("dao-finish-proposal", "Finish proposal and execute result")
     .setAction(async ({id}, hre) => {
         const dao = await hre.ethers.getContractAt("DAO", process.env.DAO ?? "");
 
-        console.log("Vote...");
+        console.log("Finish proposal...");
         await loggedSafeExecTx(dao, "finishProposal", id);
         console.log("Finished");
     });

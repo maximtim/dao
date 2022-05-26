@@ -8,7 +8,7 @@ task("dao-withdraw", "Withdraw money from DAO deposit")
     .setAction(async ({}, hre) => {
         const dao = await hre.ethers.getContractAt("DAO", process.env.DAO ?? "");
 
-        console.log("Vote...");
+        console.log("Withdraw...");
         await loggedSafeExecTx(dao, "withdrawDeposit");
         console.log("Finished");
     });
